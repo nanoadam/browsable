@@ -3,13 +3,13 @@ use std::fmt;
 
 pub struct Node {
     children: Vec<Node>,
-    node_type: NodeType
+    node_type: NodeType,
 }
 
 pub enum NodeType {
     Text(String),
     Element(ElementData),
-    Comment(String)
+    Comment(String),
 }
 
 pub struct ElementData {
@@ -18,7 +18,7 @@ pub struct ElementData {
 }
 
 impl ElementData {
-    fn new(tag_name: String, attributes: AttrMap) -> ElementData {
+    pub fn new(tag_name: String, attributes: AttrMap) -> ElementData {
         ElementData {
             tag_name,
             attributes,
@@ -32,7 +32,7 @@ impl ElementData {
     fn get_element(&self) -> HashSet<&str> {
         match self.attributes.get("class") {
             Some(s) => s.split(' ').collect(),
-            None => HashSet::new()
+            None => HashSet::new(),
         }
     }
 }
@@ -40,10 +40,10 @@ impl ElementData {
 pub type AttrMap = HashMap<String, String>;
 
 impl Node {
-    fn new(node_type: NodeType, children: Vec<Node>) -> Node {
+    pub fn new(node_type: NodeType, children: Vec<Node>) -> Node {
         Node {
             node_type,
-            children
+            children,
         }
     }
 }
@@ -58,7 +58,7 @@ impl fmt::Debug for NodeType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             NodeType::Text(ref t) | NodeType::Comment(ref t) => write!(f, "{}", t),
-            NodeType::Element(ref e) => write!(f, ":?", e),
+            NodeType::Element(ref e) => write!(f, "{:?}", e),
         }
     }
 }
@@ -85,10 +85,10 @@ pub fn pretty_print(n: &Node, indent_size: usize) {
     }
 
     for child in n.children.iter() {
-        pretty_print(&child, indent_size+2);
+        pretty_print(&child, indent_size + 2);
     }
 
     match n.node_type {
-        NodeType::Element(ref e) => println!("{}<{}/>")
+        NodeType::Element(ref e) => println!("{}<{}/>", indent, e.tag_name),
     }
 }
