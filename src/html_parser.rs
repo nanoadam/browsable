@@ -42,7 +42,7 @@ impl<'a> HtmlParser<'a> {
                 self.chars.next();
                 nodes.push(self.parse_comment_node())
             } else {
-                let mut node = self.parse_nodes();
+                let mut node = self.parse_node();
                 let insert_index = nodes.len();
 
                 match node.node_type {
@@ -65,7 +65,7 @@ impl<'a> HtmlParser<'a> {
         nodes
     }
 
-    fn parse_node(&mut self) -> Node {
+    pub fn parse_node(&mut self) -> Node {
         let tagname = self.consume_while(is_valid_tag_name);
         let attributes = self.parse_attributes();
 
@@ -77,7 +77,7 @@ impl<'a> HtmlParser<'a> {
     fn parse_text_node(&mut self) -> Node {
         let mut text_content = String::new();
 
-        while self.chars().peek().map_or(false, |c| *c != '<') {
+        while self.chars.peek().map_or(false, |c| *c != '<') {
             let whitespace = self.consume_while(char::is_whitespace);
             if whitespace.len() > 0 {
                 text_content.push(' ');

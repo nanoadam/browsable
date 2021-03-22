@@ -1,19 +1,23 @@
 use std::collections::{HashMap, HashSet};
 use std::fmt;
 
+#[derive(PartialEq, Eq)]
 pub struct Node {
-    children: Vec<Node>,
-    node_type: NodeType,
+    pub children: Vec<Node>,
+    pub node_type: NodeType,
 }
 
+#[derive(PartialEq, Eq, Clone)]
 pub enum NodeType {
     Text(String),
     Element(ElementData),
     Comment(String),
 }
 
+
+#[derive(PartialEq, Eq, Clone)]
 pub struct ElementData {
-    tag_name: String,
+    pub tag_name: String,
     attributes: AttrMap,
 }
 
@@ -88,7 +92,8 @@ pub fn pretty_print(n: &Node, indent_size: usize) {
         pretty_print(&child, indent_size + 2);
     }
 
-    match n.node_type {
+    match &n.node_type {
         NodeType::Element(ref e) => println!("{}<{}/>", indent, e.tag_name),
+        __ => {}
     }
 }
